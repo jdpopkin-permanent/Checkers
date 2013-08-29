@@ -120,8 +120,14 @@ class Board
 
   def has_jump_move?(player)
     # cycle through squares
+    pieces = get_pieces_by_player(player)
 
-    # if matches player, test if it can jump
+    # test if it can jump
+    pieces.each do |piece|
+      return true if piece.can_jump?
+    end
+
+    false
   end
 
   def get_pieces_by_player(player)
@@ -132,27 +138,13 @@ class Board
         pieces << col if col.color == player.color
       end
     end
-    p pieces
     pieces
   end
 
   def game_over?(red, white)
-    # white_wins = self.board.all? do |row|
-#       row.all? do |col|
-#         col.nil? || col.color == :white
-#       end
-#     end
-
     red_pieces = get_pieces_by_player(red)
     white_pieces = get_pieces_by_player(white)
 
-    # black_wins = self.board.all? do |row|
-#       row.all? do |col|
-#         col.nil? || col.color == :red
-#       end
-#     end
-
-    #white_wins || black_wins
     red_pieces.empty? || white_pieces.empty?
   end
 

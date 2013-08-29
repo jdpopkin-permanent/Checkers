@@ -29,12 +29,10 @@ class Checkers
 
   def play_turn(player)
     raw_move = player.get_move
-    p raw_move
     starting_pos = raw_move.shift
     self.board.perform_moves(starting_pos, raw_move)
 
     rescue InvalidMoveError => e
-      # puts "Stuck at line 37"
       puts e.msg
       retry
   end
