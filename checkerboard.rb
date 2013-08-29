@@ -18,7 +18,7 @@ class Board
       col.each_with_index do |row, j|
         next if (i + j).even? # pieces start on black squares
         if red_rows.include?(j)
-          board[i][j] = Piece.new(:red, [i, j], self) #CARE
+          board[i][j] = Piece.new(:red, [i, j], self)
         elsif white_rows.include?(j)
           board[i][j] = Piece.new(:white, [i, j], self)
         end
@@ -41,35 +41,32 @@ class Board
   end
 
   def perform_slide(start_pos, end_pos)
+    boundary_checks(start_pos, end_pos)
+
     piece = self[start_pos]
-
-    raise InvalidMoveError.new("No such piece") if self[start_pos].nil?
-
     slides = piece.slide_moves
 
     raise InvalidMoveError.new("That piece cannot slide there.") unless
       slides.include?(end_pos)
 
+    update_endpoints(start_pos, end_pos)
+  end
+
+  def boundary_checks(start_pos, end_pos)
+    raise InvalidMoveError.new("No such piece") if self[start_pos].nil?
+
     raise InvalidMoveError.new("That space is occupied.") unless
       self[end_pos].nil?
-
-    self[end_pos] = self[start_pos]
-    self[start_pos] = nil
-    piece.pos = end_pos
-    piece.promotion!
   end
 
   def perform_jump(start_pos, end_pos)
+    boundary_checks(start_pos, end_pos)
+
     piece = self[start_pos]
     jumps = piece.jump_moves
 
-    raise InvalidMoveError.new("No such piece") if self[start_pos].nil?
-
     raise InvalidMoveError.new("That piece cannot jump there.") unless
       jumps.include?(end_pos)
-
-    raise InvalidMoveError.new("That space is occupied.") unless
-      self[end_pos].nil?
 
     # find piece in the middle
     middle_pos = find_middle(start_pos, end_pos)
@@ -85,11 +82,17 @@ class Board
     # delete it
     self[middle_pos] = nil
 
-    self[end_pos] = piece # self[start_pos]
+    update_endpoints(start_pos, end_pos)
+  end
+
+  def update_endpoints(start_pos, end_pos)
+    piece = self[start_pos]
+
+    self[end_pos] = piece
     self[start_pos] = nil
     piece.pos = end_pos
 
-    piece.promotion!
+    # piece.promotion!
   end
 
   def valid_move_sequence?(start_pos, move_sequence)
@@ -117,24 +120,21 @@ class Board
         jumps.include?(move_sequence.first)
     end
 
-
     if valid_move_sequence?(start_pos, move_sequence)
       piece.perform_moves!(move_sequence)
     else
       raise InvalidMoveError.new("Invalid move sequence.")
     end
+
+    piece.promotion!
   end
 
   def has_jump_move?(color)
     # cycle through squares
     pieces = get_pieces_by_color(color)
 
-    # test if it can jump
-    pieces.each do |piece|
-      return true if piece.can_jump?
-    end
-
-    false
+    # test if any can jump
+    pieces.any? {|piece| piece.can_jump?}
   end
 
   def get_pieces_by_color(color)
