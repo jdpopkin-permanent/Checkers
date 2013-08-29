@@ -70,6 +70,9 @@ class Board
     middle_pos = find_middle(start_pos, end_pos)
     middle_piece = self[middle_pos]
 
+    raise InvalidMoveError.new("Nothing to jump") if
+      middle_piece.nil?
+
     # make sure it's an enemy piece
     raise InvalidMoveError.new("Cannot jump friendly piece") if
       piece.color == middle_piece.color
@@ -77,13 +80,13 @@ class Board
     # delete it
     self[middle_pos] = nil
 
-    self[end_pos] = self[start_pos]
+    self[end_pos] = piece # self[start_pos]
     self[start_pos] = nil
     piece.pos = end_pos
   end
 
   def find_middle(start_pos, end_pos)
-    middle_pos = start_pos
+    middle_pos = start_pos.dup
 
     [0, 1].each do |i|
       if end_pos[i] > start_pos[i]
@@ -98,19 +101,6 @@ class Board
 
   def render
     str = "  0 1 2 3 4 5 6 7\n"
-
-    # substr = "0 "
-    # (0..7).each do |i|
-    #   substr << "\033["
-    #   substr << (i.even? ? "47" : "42")
-    #
-    #   unless self[[i, 0]].nil?
-    #     substr << ";" << (self[[i, 0]]).to_s
-    #   else
-    #     substr << "m" << " "
-    #     substr << " "
-    #   end
-    # end
 
     (0..7).each do |i|
       substr = "\033[0m#{i} "
