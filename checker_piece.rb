@@ -43,8 +43,10 @@ class Piece
   def can_jump?
     jumps = self.jump_moves
     jumps.each do |jump|
-
+      return true if self.board.valid_move_sequence?(self.pos, [jump])
     end
+
+    false
   end
 
   def perform_moves!(move_sequence)
