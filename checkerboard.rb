@@ -44,15 +44,23 @@ class Board
     piece = self[start_pos]
     slides = piece.slide_moves
 
-    # raise InvalidMoveError.new("That piece cannot slide there.") unless
-      # slides.include?(end_pos)
+    raise InvalidMoveError.new("That piece cannot slide there.") unless
+      slides.include?(end_pos)
 
-    # raise InvalidMoveError.new("That space is occupied.") unless
-      # board[end_pos].nil?
+    raise InvalidMoveError.new("That space is occupied.") unless
+      self[end_pos].nil?
 
     self[end_pos] = self[start_pos]
     self[start_pos] = nil
     piece.pos = end_pos
   end
+
+end
+
+class InvalidMoveError < StandardError
+
+end
+
+class RangeError < StandardError
 
 end
