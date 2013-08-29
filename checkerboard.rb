@@ -111,14 +111,9 @@ class Board
     piece = self[start_pos]
     raise InvalidMoveError.new("No piece at that location") if piece.nil?
 
-    p "Start pos: #{start_pos}"
-    p "Move sequence: #{move_sequence}"
-    # p "Got to b 114"
     if valid_move_sequence?(start_pos, move_sequence)
       piece.perform_moves!(move_sequence)
-      # p "Got to b 117"
     else
-      # p "Got to b 119"
       raise InvalidMoveError.new("Invalid move sequence")
     end
   end
@@ -127,6 +122,18 @@ class Board
     # cycle through squares
 
     # if matches player, test if it can jump
+  end
+
+  def get_pieces_by_player(player)
+    pieces = []
+    self.board.each do |row|
+      row.each do |col|
+        next if col.nil?
+        pieces << col if col.color == player.color
+      end
+    end
+    p pieces
+    pieces
   end
 
   def game_over?
