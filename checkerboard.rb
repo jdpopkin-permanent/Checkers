@@ -31,12 +31,13 @@ class Board
   end
 
   def []=(start_pos, piece)
-    # raise RangeError.new("Position #{pos} out of range") unless in_range(pos)
+    raise RangeError.new("Position #{start_pos} out of range") unless in_range?(start_pos)
     board[start_pos[0]][start_pos[1]] = piece
   end
 
   def in_range?(pos)
-    pos[0] < self.board.length && pos[1] < self.board[0].length
+    pos[0] < self.board.length && pos[1] < self.board[0].length &&
+      pos[0] >= 0 && pos[1] >= 0
   end
 
   def perform_slide(start_pos, end_pos)
@@ -89,6 +90,37 @@ class Board
     piece.pos = end_pos
 
     piece.promotion!
+  end
+
+  def valid_move_sequence?(start_pos, move_sequence)
+    piece = self[start_pos]
+    return false unless piece
+
+    fake_board = self.deep_dup
+    fake_piece = fake_board[start_pos]
+
+    begin
+      fake_piece.perform_moves!(move_sequence)
+    rescue InvalidMoveError => e
+      return false
+    end
+    true
+  end
+
+  def deep_dup
+    fake_self = self.dup
+    fake_self.board = []
+    self.board.each do |row|
+      fake_row = []
+
+      row.each do |col|
+        fake_row << col.deep_dup(fake_self.board) unless col.nil?
+        fake_row << nil if col.nil?
+      end
+
+      fake_self.board << fake_row
+    end
+    fake_self
   end
 
   def find_middle(start_pos, end_pos)

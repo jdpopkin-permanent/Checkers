@@ -1,7 +1,7 @@
 class Piece
 
-  attr_reader :color, :board
-  attr_accessor :pos, :king
+  attr_reader :color
+  attr_accessor :pos, :king, :board
 
   def initialize(color, position, board)
     @color = color
@@ -63,6 +63,13 @@ class Piece
       self.king = true
     end
     self
+  end
+
+  def deep_dup(fake_board)
+    fake_self = self.dup
+    fake_self.board = fake_board
+    fake_self.pos = self.pos.dup
+    fake_self
   end
 
   def to_s
