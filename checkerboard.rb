@@ -53,6 +53,41 @@ class Board
     self[end_pos] = self[start_pos]
     self[start_pos] = nil
     piece.pos = end_pos
+    # piece.promotion!
+  end
+
+  def perform_jump(start_pos, end_pos)
+    piece = self[start_pos]
+    jumps = piece.jump_moves
+
+    raise InvalidMoveError.new("That piece cannot jump there.") unless
+      jumps.include?(end_pos)
+
+    raise InvalidMoveError.new("That space is occupied.") unless
+      self[end_pos].nil?
+
+    # find piece in the middle
+
+    # make sure it's an enemy piece
+
+    # delete it
+    self[end_pos] = self[start_pos]
+    self[start_pos] = nil
+    piece.pos = end_pos
+  end
+
+  def find_middle(start_pos, end_pos)
+    middle_pos = start_pos
+
+    [0, 1].each do |i|
+      if end_pos[i] > start_pos[i]
+        middle_pos[i] += 1
+      else
+        middle_pos[i] -= 1
+      end
+    end
+
+    middle_pos
   end
 
 end
