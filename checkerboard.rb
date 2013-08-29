@@ -109,13 +109,40 @@ class Board
 
   def perform_moves(start_pos, move_sequence)
     piece = self[start_pos]
-    raise InvalidMoveError("No piece at that location") if piece.nil?
+    raise InvalidMoveError.new("No piece at that location") if piece.nil?
 
+    p "Start pos: #{start_pos}"
+    p "Move sequence: #{move_sequence}"
+    # p "Got to b 114"
     if valid_move_sequence?(start_pos, move_sequence)
       piece.perform_moves!(move_sequence)
+      # p "Got to b 117"
     else
-      raise InvalidMoveError("Invalid move sequence")
+      # p "Got to b 119"
+      raise InvalidMoveError.new("Invalid move sequence")
     end
+  end
+
+  def has_jump_move?(player)
+    # cycle through squares
+
+    # if matches player, test if it can jump
+  end
+
+  def game_over?
+    white_wins = self.board.all? do |row|
+      row.all? do |col|
+        col.nil? || col.color == :white
+      end
+    end
+
+    black_wins = self.board.all? do |row|
+      row.all? do |col|
+        col.nil? || col.color == :red
+      end
+    end
+
+    white_wins || black_wins
   end
 
   def deep_dup
@@ -174,9 +201,17 @@ class Board
 end
 
 class InvalidMoveError < StandardError
+  attr_accessor :msg
 
+  def initialize(msg = "Invalid move error")
+    super(msg)
+  end
 end
 
 class RangeError < StandardError
+  attr_accessor :msg
 
+  def initialize(msg)
+    super(msg)
+  end
 end

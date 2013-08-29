@@ -40,6 +40,13 @@ class Piece
     jumps.map {|jump| [jump[0] + pos[0], jump[1] + pos[1]]}
   end
 
+  def can_jump?
+    jumps = self.jump_moves
+    jumps.each do |jump|
+
+    end
+  end
+
   def perform_moves!(move_sequence)
     slides = self.slide_moves
 
