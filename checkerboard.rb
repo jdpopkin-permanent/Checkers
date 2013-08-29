@@ -111,16 +111,23 @@ class Board
     piece = self[start_pos]
     raise InvalidMoveError.new("No piece at that location") if piece.nil?
 
+    if has_jump_move?(piece.color) # forces player to jump when possible
+      jumps = piece.jump_moves.select{|jump| in_range?(jump)}
+      raise InvalidMoveError.new("You must jump whenever possible!") unless
+        jumps.include?(move_sequence.first)
+    end
+
+
     if valid_move_sequence?(start_pos, move_sequence)
       piece.perform_moves!(move_sequence)
     else
-      raise InvalidMoveError.new("Invalid move sequence")
+      raise InvalidMoveError.new("Invalid move sequence.")
     end
   end
 
-  def has_jump_move?(player)
+  def has_jump_move?(color)
     # cycle through squares
-    pieces = get_pieces_by_player(player)
+    pieces = get_pieces_by_color(color)
 
     # test if it can jump
     pieces.each do |piece|
@@ -130,20 +137,20 @@ class Board
     false
   end
 
-  def get_pieces_by_player(player)
+  def get_pieces_by_color(color)
     pieces = []
     self.board.each do |row|
       row.each do |col|
         next if col.nil?
-        pieces << col if col.color == player.color
+        pieces << col if col.color == color
       end
     end
     pieces
   end
 
   def game_over?(red, white)
-    red_pieces = get_pieces_by_player(red)
-    white_pieces = get_pieces_by_player(white)
+    red_pieces = get_pieces_by_color(:red)
+    white_pieces = get_pieces_by_color(:white)
 
     red_pieces.empty? || white_pieces.empty?
   end

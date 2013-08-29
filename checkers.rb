@@ -33,7 +33,8 @@ class Checkers
     self.board.perform_moves(starting_pos, raw_move)
 
     rescue InvalidMoveError => e
-      puts e.msg
+      puts e
+      puts
       retry
   end
 
