@@ -67,10 +67,16 @@ class Board
       self[end_pos].nil?
 
     # find piece in the middle
+    middle_pos = find_middle(start_pos, end_pos)
+    middle_piece = self[middle_pos]
 
     # make sure it's an enemy piece
+    raise InvalidMoveError.new("Cannot jump friendly piece") if
+      piece.color == middle_piece.color
 
     # delete it
+    self[middle_pos] = nil
+
     self[end_pos] = self[start_pos]
     self[start_pos] = nil
     piece.pos = end_pos
