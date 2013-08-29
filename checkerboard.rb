@@ -107,6 +107,17 @@ class Board
     true
   end
 
+  def perform_moves(start_pos, move_sequence)
+    piece = self[start_pos]
+    raise InvalidMoveError("No piece at that location") if piece.nil?
+
+    if valid_move_sequence?(start_pos, move_sequence)
+      piece.perform_moves!(move_sequence)
+    else
+      raise InvalidMoveError("Invalid move sequence")
+    end
+  end
+
   def deep_dup
     fake_self = self.dup
     fake_self.board = []
@@ -114,7 +125,7 @@ class Board
       fake_row = []
 
       row.each do |col|
-        fake_row << col.deep_dup(fake_self.board) unless col.nil?
+        fake_row << col.deep_dup(fake_self) unless col.nil?
         fake_row << nil if col.nil?
       end
 
