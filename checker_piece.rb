@@ -45,6 +45,15 @@ class Piece
     false
   end
 
+  def can_slide?
+    slides = self.slide_moves.select {|slide| self.board.in_range?(slide)}
+    slides.each do |slide|
+      return true if self.board.valid_move_sequence?(self.pos, [slide])
+    end
+
+    false
+  end
+
   def perform_moves!(move_sequence)
     slides = self.slide_moves
 
