@@ -1,12 +1,13 @@
 class Piece
 
-  attr_reader :color
+  attr_reader :color, :board
   attr_accessor :pos, :king
 
-  def initialize(color, position)
+  def initialize(color, position, board)
     @color = color
     @pos = position
     @king = false
+    @board = board
   end
 
   def slide_moves
@@ -37,6 +38,22 @@ class Piece
     end
 
     jumps.map {|jump| [jump[0] + pos[0], jump[1] + pos[1]]}
+  end
+
+  def perform_moves!(move_sequence)
+    slides = self.slide_moves
+
+    if slides.include?(move_sequence.first)
+      raise InvalidMoveError.new("Can't chain slide moves together") if
+        move_sequence.length > 1
+      self.board.perform_slide(self.pos, move_sequence.first)
+
+    else # all jumps
+      move_sequence.each do |move|
+        jumps = self.jump_moves
+        self.board.perform_jump(self.pos, move)
+      end
+    end
   end
 
   def promotion!
