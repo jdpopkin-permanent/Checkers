@@ -39,14 +39,14 @@ class Piece
     jumps.map {|jump| [jump[0] + pos[0], jump[1] + pos[1]]}
   end
 
-  # def promotion!
-#     if self.king return self
-#     goal_row = piece.color == :white ? 7 : 0
-#     if self.pos[1] == goal_row
-#       self.king = true
-#     end
-#     self
-#   end
+  def promotion!
+    return self if self.king
+    goal_row = self.color == :white ? 0 : 7
+    if self.pos[1] == goal_row
+      self.king = true
+    end
+    self
+  end
 
   def to_s
     str = ""
@@ -55,7 +55,8 @@ class Piece
     else
       str << "31m"
     end
-    str << "\u25C9 " # replace with unicode
+    str << "\u25C9 " unless self.king # non-king
+    str << "\u24DA " if self.king
     str
   end
 end

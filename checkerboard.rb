@@ -15,11 +15,10 @@ class Board
     white_rows = [5, 6, 7]
 
     self.board.each_with_index do |col, i|
-      #next unless red_rows.include?(i) || white_rows.include?(i)
       col.each_with_index do |row, j|
         next if (i + j).even? # pieces start on black squares
         if red_rows.include?(j)
-          board[i][j] = Piece.new(:red, [i, j])
+          #board[i][j] = Piece.new(:red, [i, j]) DONT FORGET THIS
         elsif white_rows.include?(j)
           board[i][j] = Piece.new(:white, [i, j])
         end
@@ -44,6 +43,8 @@ class Board
     piece = self[start_pos]
     slides = piece.slide_moves
 
+    raise InvalidMoveError.new("No such piece") if self[start_pos].nil?
+
     raise InvalidMoveError.new("That piece cannot slide there.") unless
       slides.include?(end_pos)
 
@@ -53,12 +54,14 @@ class Board
     self[end_pos] = self[start_pos]
     self[start_pos] = nil
     piece.pos = end_pos
-    # piece.promotion!
+    piece.promotion!
   end
 
   def perform_jump(start_pos, end_pos)
     piece = self[start_pos]
     jumps = piece.jump_moves
+
+    raise InvalidMoveError.new("No such piece") if self[start_pos].nil?
 
     raise InvalidMoveError.new("That piece cannot jump there.") unless
       jumps.include?(end_pos)
@@ -83,6 +86,12 @@ class Board
     self[end_pos] = piece # self[start_pos]
     self[start_pos] = nil
     piece.pos = end_pos
+
+    piece.promotion!
+  end
+
+  def perform_moves!(move_sequence)
+
   end
 
   def find_middle(start_pos, end_pos)
