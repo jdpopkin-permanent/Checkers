@@ -18,7 +18,7 @@ class Board
       col.each_with_index do |row, j|
         next if (i + j).even? # pieces start on black squares
         if red_rows.include?(j)
-          board[i][j] = Piece.new(:red, [i, j], self)
+          board[i][j] = Piece.new(:red, [i, j], self) #CARE
         elsif white_rows.include?(j)
           board[i][j] = Piece.new(:white, [i, j], self)
         end
@@ -136,20 +136,24 @@ class Board
     pieces
   end
 
-  def game_over?
-    white_wins = self.board.all? do |row|
-      row.all? do |col|
-        col.nil? || col.color == :white
-      end
-    end
+  def game_over?(red, white)
+    # white_wins = self.board.all? do |row|
+#       row.all? do |col|
+#         col.nil? || col.color == :white
+#       end
+#     end
 
-    black_wins = self.board.all? do |row|
-      row.all? do |col|
-        col.nil? || col.color == :red
-      end
-    end
+    red_pieces = get_pieces_by_player(red)
+    white_pieces = get_pieces_by_player(white)
 
-    white_wins || black_wins
+    # black_wins = self.board.all? do |row|
+#       row.all? do |col|
+#         col.nil? || col.color == :red
+#       end
+#     end
+
+    #white_wins || black_wins
+    red_pieces.empty? || white_pieces.empty?
   end
 
   def deep_dup

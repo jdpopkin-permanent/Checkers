@@ -19,7 +19,7 @@ class Checkers
       [@red, @white].each do |player|
         player.show_board(self.board)
         play_turn(player)
-        if board.game_over?
+        if board.game_over?(@red, @white)
           puts "#{player.color} wins!"
           return
         end
