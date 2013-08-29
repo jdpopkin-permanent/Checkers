@@ -10,7 +10,6 @@ class Board
   end
 
   def place_pieces
-    pieces_per_side = 12 # each player gets 12 pieces
     red_rows = [0, 1, 2] # red starts in top 3 rows
     white_rows = [5, 6, 7]
 
