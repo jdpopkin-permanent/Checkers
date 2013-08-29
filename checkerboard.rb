@@ -201,8 +201,9 @@ class Board
           substr << " "
         end
       end
-      str << substr << "\033[0m\n"
+      str << substr << "\033[0m #{i}\n"
     end
+    str << "  0 1 2 3 4 5 6 7\n"
 
     str
   end
