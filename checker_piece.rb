@@ -39,5 +39,23 @@ class Piece
     jumps.map {|jump| [jump[0] + pos[0], jump[1] + pos[1]]}
   end
 
+  # def promotion!
+#     if self.king return self
+#     goal_row = piece.color == :white ? 7 : 0
+#     if self.pos[1] == goal_row
+#       self.king = true
+#     end
+#     self
+#   end
 
+  def to_s
+    str = ""
+    if self.color == :white
+      str << "37m"
+    else
+      str << "31m"
+    end
+    str << "\u25C9 " # replace with unicode
+    str
+  end
 end

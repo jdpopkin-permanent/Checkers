@@ -96,6 +96,42 @@ class Board
     middle_pos
   end
 
+  def render
+    str = "  0 1 2 3 4 5 6 7\n"
+
+    # substr = "0 "
+    # (0..7).each do |i|
+    #   substr << "\033["
+    #   substr << (i.even? ? "47" : "42")
+    #
+    #   unless self[[i, 0]].nil?
+    #     substr << ";" << (self[[i, 0]]).to_s
+    #   else
+    #     substr << "m" << " "
+    #     substr << " "
+    #   end
+    # end
+
+    (0..7).each do |i|
+      substr = "\033[0m#{i} "
+      (0..7).each do |j|
+        substr << "\033["
+        substr << ((i + j).even? ? "47" : "42")
+
+        unless self[[j, i]].nil?
+          substr << ";" << (self[[j, i]]).to_s
+        else
+          substr << "m" << " "
+          substr << " "
+        end
+      end
+      str << substr << "\033[0m\n"
+    end
+
+    str
+  end
+
+
 end
 
 class InvalidMoveError < StandardError
